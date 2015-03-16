@@ -105,12 +105,13 @@ class FeedEntry(object):
 							self.__atom_content.get('content')))
 				elif type == 'CDATA':
 					content.text = etree.CDATA(self.__atom_content)
-				# Emed the text in escaped form
-				elif not type or type.startswith('text') or type == 'html':
-					content.text = self.__atom_content.get('content')
+                                # XXX Fix me.
 				# Parse XML and embed it
 				elif type.endswith('/xml') or type.endswith('+xml'):
 					content.append(etree.fromstring(self.__atom_content['content']))
+				# Emed the text in escaped form
+				elif not type or type.startswith('text') or type == 'html':
+					content.text = self.__atom_content.get('content')
 				# Everything else should be included base64 encoded
 				else:
 					raise ValueError('base64 encoded content is not supported at the moment.'
@@ -138,8 +139,8 @@ class FeedEntry(object):
 
 		for c in self.__atom_category or []:
 			cat = etree.SubElement(entry, 'category', term=c['term'])
-			if c.get('schema'):
-				cat.attrib['schema'] = c['schema']
+			if c.get('scheme'):
+				cat.attrib['scheme'] = c['scheme']
 			if c.get('label'):
 				cat.attrib['label'] = c['label']
 
@@ -504,8 +505,8 @@ class FeedEntry(object):
 			for cat in self.__atom_category:
 				rss_cat = {}
 				rss_cat['value'] = cat['label'] if cat.get('label') else cat['term']
-				if cat.get('schema'):
-					rss_cat['domain'] = cat['schema']
+				if cat.get('scheme'):
+					rss_cat['domain'] = cat['scheme']
 				self.__rss_category.append( rss_cat )
 		return self.__atom_category
 
